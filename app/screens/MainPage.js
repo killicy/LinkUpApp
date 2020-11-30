@@ -6,6 +6,7 @@ import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
 import PropTypes from 'prop-types';
 import NavBar from './NavBar';
+import {Text, Alert,ImageBackground, SafeAreaView, StyleSheet, TouchableHighlight, View, TextInput } from 'react-native';
 
 
 class LinkUp extends React.Component {

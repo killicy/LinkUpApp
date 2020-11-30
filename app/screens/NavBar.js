@@ -251,7 +251,7 @@ setInputValue(property, val) {
             <Modal.Dialog>
               <Modal.Header closeButton>
                 <div/>
-                <Modal.Title>Edit Account</Modal.Title>
+                <Modal.Title><Text>Edit Account</Text></Modal.Title>
               </Modal.Header>
               <Modal.Body>
                   <div className="space"></div>
@@ -263,15 +263,15 @@ setInputValue(property, val) {
                          </Image>
                         </div>
                        <div className="form-group">
-                           <label>First Name:</label>
+                           <label><Text>First Name:</Text></label>
                            <input type="text" className="form-control" placeholder={this.state.user.fName} onChange = {e => this.setInputValue("fName", e.target.value)}/>
                        </div>
                        <div className="form-group">
-                           <label>Last Name:</label>
+                           <label><Text>Last Name:</Text></label>
                            <input type="text" className="form-control" placeholder={this.state.user.lName} onChange = {e => this.setInputValue("lName", e.target.value)}/>
                        </div>
                        <div className="form-group">
-                           <label>Description:</label>
+                           <label><Text>Description:</Text></label>
                            <textarea className="form-control" placeholder={this.state.user.Description} onChange = {e => this.setInputValue("description", e.target.value)}/>
                        </div>
                    </form>
@@ -294,10 +294,10 @@ setInputValue(property, val) {
           </Dropdown.Toggle>
           <Dropdown.Menu className = "navBarDropdown">
             <Dropdown.Item onClick={ () => this.doLogout() }>
-              Log Out
+              <Text>Log Out</Text>
             </Dropdown.Item>
             <Dropdown.Item onClick={ () => this.setShow() }>
-              My Account
+              <Text>My Account</Text>
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>

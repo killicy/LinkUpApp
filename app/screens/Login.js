@@ -45,7 +45,6 @@ class Login extends React.Component {
           })}).then(response => response.json()).then((data) => {
             if(data.success){
               this.state.User = data.Username;
-              console.log("help");
               console.log(data.Username);
 
               this.state.isLoggedin = true;
@@ -82,34 +81,23 @@ class Login extends React.Component {
     }
 
     return(
-      <div className="loginStyling" style={styles.container}>
-      <View style={styles.container}>
-      <ImageBackground
-      style={styles.background}
-      source={require('../assets/background.jpg')}
-      >
-         <Image style={styles.logo} source={require('../assets/logo.png')} />
-      </ImageBackground>
-      </View>
-
         <div className="loginForm">
           <form className="login">
              <h3 className="header">Sign In</h3>
              <div className="form-group">
-                 <h6>Username</h6>
+                 <Text>Username</Text>
                  <input type="text" className="form-control" placeholder="Enter username" onChange = {e => this.setInputValue("username", e.target.value)}/>
              </div>
              <div className="form-group">
-                 <h6>Password</h6>
+                 <Text>Password</Text>
                  <input type="password" className="form-control" placeholder="Enter password" onChange = {e => this.setInputValue("password", e.target.value)}/>
-                 <Button variant="primary" block onPress = {() => this.doLogin()}>Sign In</Button>
+                 <Button variant="primary" block onPress = {() => this.doLogin()}><Text>Sign In</Text></Button>
              </div>
              {
-               this.state.message ? <div className="alert alert-danger text-center">{this.state.message}</div> : ''
+               this.state.message ? <div className="alert alert-danger text-center"><Text>{this.state.message}</Text></div> : <Text>''</Text>
              }
          </form>
         </div>
-      </div>
     );
   }
 }

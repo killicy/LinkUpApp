@@ -2,6 +2,7 @@ import React from 'react';
 import { Card } from "react-bootstrap";
 import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
+import {Text, Alert,ImageBackground, SafeAreaView, StyleSheet, TouchableHighlight, View, TextInput } from 'react-native';
 
 class MainContent extends React.Component {
 
@@ -36,11 +37,11 @@ list(data){
   }
   return (
     <div className="participants">
-      Participants:
+      <Text>Participants:</Text>
       <div className="participantsList">
         {data.map((user, index) =>{
           return (
-            <div className="parti">{user.Username},</div>
+            <div className="parti"><Text>{user.Username},</Text></div>
           )
         })}
       </div>
@@ -78,7 +79,7 @@ async addEvent(Title){
             return (
                 <Card key={index} className="EventCards">
                 <Card.Header>
-                  <Card.Title onClick={ () => this.setShow() }><p className="cardHead">{event.Title}<br/><br/>Made by:<div>{" "}</div>{event.Author.Username}</p></Card.Title>
+                  <Card.Title onClick={ () => this.setShow() }><Text><p className="cardHead">{event.Title}<br/><br/>Made by:<div>{" "}</div>{event.Author.Username}</p></Text></Card.Title>
                   <div className="eventDate"></div>
 
                 </Card.Header>
@@ -87,8 +88,8 @@ async addEvent(Title){
                   {this.list(this.props.data.participants[index])}
                 </Card.Body>
                 <Card.Footer>
-                  {this.props.data.showy[index] === false ? <button type="button" className="searchBtn btn-dark btn-block" onClick = {() => this.addEvent(event.Title)}>Join Event</button>
-                  : <button type="button" className="searchBtn btn-dark btn-block" onClick = {() => this.addEvent(event.Title)}>Remove Event</button>}
+                  {this.props.data.showy[index] === false ? <button type="button" className="searchBtn btn-dark btn-block" onClick = {() => this.addEvent(event.Title)}><Text>Join Event</Text></button>
+                  : <button type="button" className="searchBtn btn-dark btn-block" onClick = {() => this.addEvent(event.Title)}><Text>Remove Event</Text></button>}
                 </Card.Footer>
 
                 </Card>
