@@ -1,8 +1,6 @@
 import React from 'react';
-import React, { Component } from 'react';
+import { Component } from 'react';
 import {Text, Alert, Button, Image, ImageBackground, SafeAreaView, StyleSheet, TouchableHighlight, View, TextInput } from 'react-native';
-
-
 
 class Login extends React.Component {
   constructor(){
@@ -17,21 +15,21 @@ class Login extends React.Component {
   }
   async componentDidMount() {
     try {
-      await fetch(process.env.REACT_APP_API_URL + '/api/user/isLoggedin', {
+      await fetch('https://localhost:5000/api/user/isLoggedIn', {
         method: 'GET',
         credentials: 'include',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': process.env.REACT_APP_CLIENT_URL,
+          'Access-Control-Allow-Origin': 'http://localhost:19006',
         }}).then(response => response.json()).then(data => this.setState({isLoggedin: data.success}));
          if (this.state.isLoggedin) {
-          this.props.history.push('/Profile/' + this.state.message);
          }
          else {
          }
     }
     catch(e) {
+      console.log(e);
     }
   }
   setInputValue(property, val) {
@@ -49,24 +47,29 @@ class Login extends React.Component {
     this.props.history.push('/Register');
   }
   async doLogin(){
-    //console.log(this.state.password)
-    await fetch(process.env.REACT_APP_API_URL + '/api/user/login', {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': process.env.REACT_APP_CLIENT_URL,
-        },
-        body: JSON.stringify({
-          Username: this.state.username,
-          Password: this.state.password
-        })}).then(response => response.json()).then((data) => {
-          if(data.success){
-            this.props.history.push('/Profile/' + this.state.username);
-          }
-          this.setState({message: data.msg});
-        });
+    try{
+      await fetch('https://linkup.rocksthe.net:5000/api/user/login', {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': 'http://localhost:19006',
+          },
+          body: JSON.stringify({
+            Username: this.state.username,
+            Password: this.state.password
+          })}).then(response => response.json()).then((data) => {
+            if(data.success){
+              console.log(this.state.username);
+            }
+            this.setState({message: data.msg});
+          });
+
+    }
+    catch(e){
+      console.log("kill me please");
+    }
   }
 
   render() {
@@ -82,13 +85,8 @@ class Login extends React.Component {
              <div className="form-group">
                  <h6>Password</h6>
                  <input type="password" className="form-control" placeholder="Enter password" onChange = {e => this.setInputValue("password", e.target.value)}/>
+                 <Button variant="primary" block onPress = {() => this.doLogin()}>Sign In</Button>
              </div>
-             <p className="need-an-account text-right">
-                 Need an account? <a href={process.env.REACT_APP_CLIENT_URL + "/Register"}>Register</a>
-             </p>
-             <p className="forgot-password text-right">
-                 Forgot <a href={process.env.REACT_APP_CLIENT_URL + "/PasswordRecovery"}>Password?</a>
-             </p>
              {
                this.state.message ? <div className="alert alert-danger text-center">{this.state.message}</div> : ''
              }

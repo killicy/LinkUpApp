@@ -1,185 +1,221 @@
-// import React in our code
-import React, {useState} from 'react';
+import React from 'react';
+//import ReactDOM from 'react-dom'
+import MainContent from './MainContent';
+import { Card } from "react-bootstrap";
+import Button from 'react-bootstrap/Button'
+import Modal from 'react-bootstrap/Modal'
+import PropTypes from 'prop-types';
 
-// import all the components we are going to use
-import {
-  SafeAreaView,
-  StyleSheet,
-  View,
-  FlatList,
-  Text,
-  TouchableOpacity,
-  Image,
-} from 'react-native';
+class LinkUp extends React.Component {
+  constructor(props){
+      super(props);
+      this.state = {
+          message: '',
+          isLoggedin: false,
+          id: 'a',
+          url: this.props.data.User,
+          events: [],
+          friends: [],
+          friendEvents: [],
+          friendEvents1: [],
+          show: false,
+          startDate: new Date(),
+          startDate1: new Date(),
+          description: '',
+          title: '',
+          success: false,
+          friend: false,
+          Profile_pic: '',
+          user: {Username: 'placeholder'},
+          showy: [],
+          event_id: null,
+          participants: [],
+          error: ''
+      }
+  }
 
-const App = () => {
-  let listViewRef;
-  const [dataSource, setDataSource] = useState([
-    {id: 1, title: 'Friend 1 + events'},
-    {id: 2, title: 'Friend 2 + events'},
-    {id: 3, title: 'Friend 3 + events'},
-    {id: 4, title: 'Friend 4 + events'},
-    {id: 5, title: 'Friend 5 + events'},
-    {id: 6, title: 'Friend 6 + events'},
-    {id: 7, title: 'Friend 7 + events'},
-    {id: 8, title: 'Friend 8 + events'},
-    {id: 9, title: 'Friend 9 + events'},
-    {id: 10, title: 'Friend 10 + events'},
-    {id: 11, title: 'Friend 11 + events'},
-    {id: 12, title: 'Friend 12 + events'},
-    {id: 13, title: 'Friend 13 + events'},
-    {id: 14, title: 'Friend 14 + events'},
-    {id: 15, title: 'Friend 15 + events'},
-    {id: 16, title: 'Friend 16 + events'},
-    {id: 17, title: 'Friend 17 + events'},
-  ]);
+  setInputValue(property, val) {
 
-  const ItemView = ({item}) => {
+      this.setState({
+          [property]: val
+      })
+  }
+
+  async participate(event, index, string){
+    try {
+      await fetch('https://localhost:5000/api/event/participants', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': 'http://localhost:19006',
+        },
+        body: JSON.stringify({
+          Title: event.Title
+        })}).then(response => response.json()).then(data => {
+          if(data.success === true){
+            this.state[string][index] = data.participants;
+          }
+        });
+        this.setState({
+          success: false
+        });
+     }
+     catch(e) {
+     }
+  }
+
+  sort_by(field, reverse, primer){
+
+  const key = primer ?
+    function(x) {
+      return primer(x[field])
+    } :
+    function(x) {
+      return x[field]
+    };
+
+  reverse = !reverse ? 1 : -1;
+
+  return function(a, b) {
+    return a = key(a), b = key(b), reverse * ((a > b) - (b > a));
+  }
+}
+
+
+
+  async resendConfirmation(){
+    try {
+      await fetch('https://localhost:5000/api/user/confirmationEmail', {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': 'http://localhost:19006',
+        }}).then(response => response.json()).then(data => this.setState({success: data.success, username: data.username}));
+         if (this.state.success) {
+           this.state.success = false;
+         }
+         else {
+         }
+    }
+    catch(e) {
+    }
+  }
+
+  async componentDidMount() {
+    try {
+      await fetch('https://localhost:5000/api/user/isLoggedIn', {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': process.env.REACT_APP_CLIENT_URL,
+        }}).then(response => response.json()).then(data => this.setState({isLoggedin: data.success,error: data.msg}));
+         if (this.state.isLoggedin) {
+           console.log(this.state.error);
+         }
+         else {
+           console.log(this.state.error);
+         }
+    }
+    catch(e) {
+      console.log(e);
+    }
+    try {
+      await fetch('https://localhost:5000/api/user/usernameInfo', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': 'http://localhost:19006',
+        },
+        body: JSON.stringify({
+          Username: this.state.url
+        })}).then(response => response.json()).then(data => {
+          if(data.success === false)
+          {
+            this.props.history.push('/TheVoid');
+          }
+          this.setState({events: data.UserEvents, friends: data.Friends, friendEvents: data.FriendEvents, success: data.success, addFriend: data.addFriend, friend: data.friend, Profile_pic: data.Profile_pic, user: data.user});
+        });
+        if(this.state.success === true){
+
+          this.state.events.map((event, index) => {
+              this.enrolled(event, index, "showy");
+              this.participate(event, index, "participants");
+          });
+          this.setState({
+            success: true,
+            friend: this.state.friend
+          })
+        }
+        else{
+        }
+    }
+    catch(e) {
+    }
+  }
+
+  setShow(){
+    if(this.state.show === false){
+      this.setState({
+        show: true
+      });
+    }
+    else{
+      this.setState({
+        show: false,
+        message: ''
+      });
+    }
+  }
+
+  setDater(date){
+    this.setState({startDate: new Date(date), startDate1: new Date(date)});
+  }
+
+  async enrolled(event, index, string){
+    try {
+      await fetch('https://localhost:5000/api/event/attendingEvent', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': 'http://localhost:19006',
+        },
+        body: JSON.stringify({
+          Title: event.Title,
+        })}).then(response => response.json()).then(data => {
+          if(data.success === true){
+            this.state[string][index] = true;
+          }
+          else{
+            this.state[string][index] = false;
+          }
+      });
+        this.setState({
+          success: false
+        });
+    }
+    catch(e) {
+    }
+  }
+
+  render() {
+
     return (
-      // Flat List Item
-      <Text
-        style={styles.itemStyle}
-        onPress={() => getItem(item)}>
-        {item.id}
-        {'.'}
-        {item.title.toUpperCase()}
-      </Text>
+      <div className="MainPage">
+        <div className="middleContainer">
+            <MainContent data = {this.state}/>
+        </div>
+      </div>
     );
-  };
-
-  const ItemSeparatorView = () => {
-    return (
-      // Flat List Item Separator
-      <View
-        style={{
-          height: 0.5,
-          width: '100%',
-          backgroundColor: '#C8C8C8',
-        }}
-      />
-    );
-  };
-
-  const getItem = (item) => {
-    // Function for click on an item
-    alert('Id : ' + item.id + ' Title : ' + item.title);
-  };
-
-  const upButtonHandler = () => {
-    //OnCLick of Up button we scrolled the list to top
-    listViewRef.scrollToOffset({
-      offset: 0,
-      animated: true
-    });
-  };
-
-  const downButtonHandler = () => {
-    //OnCLick of down button we scrolled the list to bottom
-    listViewRef.scrollToEnd({animated: true});
-  };
-
-  return (
-    <SafeAreaView style={{flex: 1}}>
-      <FlatList
-        data={dataSource}
-        keyExtractor={(item, index) => index.toString()}
-        ItemSeparatorComponent={ItemSeparatorView}
-        renderItem={ItemView}
-        ref={(ref) => {
-          listViewRef = ref;
-        }}
-      />
-      <TouchableOpacity
-        activeOpacity={0.5}
-        onPress={downButtonHandler}
-        style={styles.downButtonStyle}>
-        <Image
-          source={{
-            uri:
-              'https://raw.githubusercontent.com/AboutReact/sampleresource/master/arrow_down.png',
-          }}
-          style={styles.downButtonImageStyle}
-        />
-      </TouchableOpacity>
-      <TouchableOpacity
-        activeOpacity={0.5}
-        onPress={upButtonHandler}
-        style={styles.upButtonStyle}>
-        <Image
-          source={{
-            uri:
-              'https://raw.githubusercontent.com/AboutReact/sampleresource/master/arrow_up.png',
-          }}
-          style={styles.upButtonImageStyle}
-        />
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => console.log("LinkUp link")}>
-          <Image style={styles.logo} source={require("../assets/logo.png")} />
-
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => alert("Profile opened")}>
-
-          <Image style={styles.profilePic} source={require("../assets/profilepic.png")} />
-
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={() => alert("Search users menu")}>
-
-          <Image style={styles.search} source={require("../assets/Search.png")} />
-
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={() => alert("Home menu")}>
-
-          <Image style={styles.homeIcon} source={require("../assets/homeicon.jpg")} />
-
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => alert("Menu")}>
-
-          <Image style={styles.menu} source={require("../assets/menu.png")} />
-
-          </TouchableOpacity>
-          
-    </SafeAreaView>
-  );
-};
-
-const styles = StyleSheet.create({
-  itemStyle: {
-    padding: 25,
-    fontSize: 20,
-  },
-
-  logo: {
-    width: 60,
-    height: 60,
-    bottom: 610,
-    left: 20,
-  },
-  profilePic: {
-    width: 60,
-    height: 60,
-    bottom: 640,
-    left: 320,
-  },
-  search: {
-    width: 40,
-    height: 40,
-    bottom: -23,
-    left: 190,
-  },
-  homeIcon: {
-    width: 40,
-    height: 40,
-    bottom: 20,
-    left: 60,
-  },
-  menu: {
-    width: 40,
-    height: 40,
-    bottom: 60,
-    left: 310,
-  },
-});
-
-export default App;
+  }
+}
+export default LinkUp;
