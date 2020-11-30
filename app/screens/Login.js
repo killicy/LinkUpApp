@@ -1,6 +1,19 @@
 import React from 'react';
 import {Text, Alert, Button, Image, ImageBackground, SafeAreaView, StyleSheet, TouchableHighlight, View, TextInput } from 'react-native';
 
+
+constructor(){
+  super();
+  this.state = {
+    username: '',
+    password: '',
+    msg: '',
+    buttonDisabled: false,
+    isLoggedin: false,
+    email: ''
+  }
+}
+
 async doLogin => {
     console.log(this.state.password)
     await fetch(process.env.REACT_APP_API_URL + '/api/user/login', {
@@ -26,20 +39,20 @@ async doLogin => {
 
 function WelcomeScreen(props) {
     return (
-        
-        
+
+
 <View style={styles.container}>
 
-       
-         <ImageBackground 
+
+         <ImageBackground
         style={styles.background}
         source={require('../assets/background.jpg')}
         >
             <Image style={styles.logo} source={require('../assets/logo.png')} />
-            <View 
+            <View
             style={styles.loginButton}
             Button></View>
-            
+
             <View style={styles.signinButton}>
 
   <Button
@@ -63,15 +76,15 @@ function WelcomeScreen(props) {
 <Button
   color="white"
     title="Forgot your password?"
-    onPress={() => Alert.prompt("No problem", 
-    "Please type your email associated with your account", text=> console.log(text))}
+    onPress={() => Alert.prompt("No problem",
+    "Please type your email associated with your account", text=> this.state.email)}
   />
 </View>
 <Image style={styles.WhiteScreen} source={require("../assets/WhiteScreen.png")} />
 <Text style= {styles.enterNewPassword}> Enter Username:</Text>
 <TextInput
 style={styles.input}
-placeholder='...' 
+placeholder='...'
 />
 
 
@@ -79,7 +92,7 @@ placeholder='...'
 <Text style= {styles.ReenterNewPassword}> Enter your password:</Text>
 <TextInput
 style={styles.input2}
-placeholder='...' 
+placeholder='...'
 secureTextEntry={true}/>
 
 <View style={styles.Submit}>
@@ -92,7 +105,7 @@ secureTextEntry={true}/>
 </View>
         </ImageBackground>
 
-        
+
 </View>
 );
 }
@@ -104,7 +117,7 @@ const styles = StyleSheet.create({
         flex:1,
         justifyContent: "flex-end",
     },
-   
+
     container: {
         flex:1,
         justifyContent: 'center',
@@ -141,7 +154,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: 'lightskyblue',
         padding: 8,
-        
+
 
     },
     input2: {
@@ -153,7 +166,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: 'lightskyblue',
         padding: 8,
-        
+
 
     },
     registerButton: {
@@ -192,7 +205,7 @@ const styles = StyleSheet.create({
         height: 50,
         bottom: 60,
         left: 210,
-    
+
 
     },
 });
