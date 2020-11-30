@@ -1,28 +1,44 @@
 import React from 'react';
 import {Text, Alert, Button, Image, ImageBackground, SafeAreaView, StyleSheet, TouchableHighlight, View, TextInput } from 'react-native';
 
-    
+
 
 function WelcomeScreen(props) {
 
-  
+  constructor(){
+    super();
+    this.state = {
+      username: '',
+      password: '',
+      msg: '',
+      buttonDisabled: false,
+      isLoggedin: false,
+      email: ''
+    }
+  }
+
+  setInputValue(property, val) {
+    this.setState({
+      [property]: val
+    })
+  }
     return (
-        
+
 
 
 
 <View style={styles.container}>
 
-       
-         <ImageBackground 
+
+         <ImageBackground
         style={styles.background}
         source={require('../assets/background.jpg')}
         >
             <Image style={styles.logo} source={require('../assets/logo.png')} />
-            <View 
+            <View
             style={styles.loginButton}
             Button></View>
-            
+
             <View style={styles.signinButton}>
 
   <Button
@@ -46,7 +62,7 @@ function WelcomeScreen(props) {
 <Button
   color="white"
     title="Forgot your password?"
-    onPress={() => Alert.prompt("No problem", 
+    onPress={() => Alert.prompt("No problem",
     "Please type your email associated with your account", text=> console.log(text))}
   />
 </View>
@@ -64,7 +80,7 @@ const styles = StyleSheet.create({
         flex:1,
         justifyContent: "flex-end",
     },
-   
+
     container: {
         flex:1,
         justifyContent: 'center',
@@ -100,7 +116,7 @@ const styles = StyleSheet.create({
         height: 50,
         bottom: 60,
         left: 210,
-    
+
 
     },
 });

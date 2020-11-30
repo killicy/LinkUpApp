@@ -14,19 +14,25 @@ constructor(){
   }
 }
 
+
+setInputValue(property, val) {
+  this.setState({
+    [property]: val
+  })
+}
+
 async doLogin => {
-    console.log(this.state.password)
-    await fetch(process.env.REACT_APP_API_URL + '/api/user/login', {
+    console.log(this.state.username)
+    await fetch('https://linkup.rocksthe.net:5000/api/user/login', {
         method: 'POST',
         credentials: 'include',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': process.env.REACT_APP_CLIENT_URL,
         },
         body: JSON.stringify({
           Username: this.state.username,
-          Password: this.state.password
+          Password: 'ww'
         })}).then(response => response.json()).then(data => this.setState({username: data.Username, message: data.msg, success: data.success, email: data.Email}));
 
       if(this.state.success){
@@ -58,7 +64,7 @@ function WelcomeScreen(props) {
   <Button
   color="white"
     title="Sign in"
-    onPress={() => Alert.prompt("Welcome back!", "Please enter your username", text=> console.log(text))}
+    onPress={() => Alert.prompt("Welcome back!", "Please enter your username", text=> setInputValue('username', text))}
   />
 </View>
 
@@ -67,7 +73,7 @@ function WelcomeScreen(props) {
 <Button
   color="white"
     title="Register"
-    onPress={() => Alert.prompt("Let's create your account", "Please create a username", text=> console.log(text))}
+    onPress={() => Alert.prompt("Let's create your account", "Please create a username", text=> setInputValue('username', text))}
   />
 </View>
 
