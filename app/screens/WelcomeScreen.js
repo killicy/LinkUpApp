@@ -1,10 +1,10 @@
 import React from 'react';
+import React, { Component } from 'react';
 import {Text, Alert, Button, Image, ImageBackground, SafeAreaView, StyleSheet, TouchableHighlight, View, TextInput } from 'react-native';
 
 
 
-function WelcomeScreen(props) {
-
+class Login extends React.Component {
   constructor(){
     super();
     this.state = {
@@ -13,112 +13,90 @@ function WelcomeScreen(props) {
       msg: '',
       buttonDisabled: false,
       isLoggedin: false,
-      email: ''
     }
   }
-
+  async componentDidMount() {
+    try {
+      await fetch(process.env.REACT_APP_API_URL + '/api/user/isLoggedin', {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': process.env.REACT_APP_CLIENT_URL,
+        }}).then(response => response.json()).then(data => this.setState({isLoggedin: data.success}));
+         if (this.state.isLoggedin) {
+          this.props.history.push('/Profile/' + this.state.message);
+         }
+         else {
+         }
+    }
+    catch(e) {
+    }
+  }
   setInputValue(property, val) {
+    console.log(val);
+    if (val.length > 50) {
+      return;
+    }
     this.setState({
       [property]: val
     })
   }
-    return (
 
 
+  doSignUp(){
+    this.props.history.push('/Register');
+  }
+  async doLogin(){
+    //console.log(this.state.password)
+    await fetch(process.env.REACT_APP_API_URL + '/api/user/login', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': process.env.REACT_APP_CLIENT_URL,
+        },
+        body: JSON.stringify({
+          Username: this.state.username,
+          Password: this.state.password
+        })}).then(response => response.json()).then((data) => {
+          if(data.success){
+            this.props.history.push('/Profile/' + this.state.username);
+          }
+          this.setState({message: data.msg});
+        });
+  }
 
-
-<View style={styles.container}>
-
-
-         <ImageBackground
-        style={styles.background}
-        source={require('../assets/background.jpg')}
-        >
-            <Image style={styles.logo} source={require('../assets/logo.png')} />
-            <View
-            style={styles.loginButton}
-            Button></View>
-
-            <View style={styles.signinButton}>
-
-  <Button
-  color="white"
-    title="Sign in"
-    onPress={() => Alert.prompt("Welcome back!", "Please enter your username", text=> console.log(text))}
-  />
-</View>
-
-<View style={styles.registerButton}>
-
-<Button
-  color="white"
-    title="Register"
-    onPress={() => Alert.prompt("Let's create your account", "Please enter your email", text=> console.log(text))}
-  />
-</View>
-
-<View style={styles.forgotPasswordButton}>
-
-<Button
-  color="white"
-    title="Forgot your password?"
-    onPress={() => Alert.prompt("No problem",
-    "Please type your email associated with your account", text=> console.log(text))}
-  />
-</View>
-        </ImageBackground>
-
-
-</View>
-);
+  render() {
+    return(
+      <div className="loginStyling">
+        <div className="loginForm">
+          <form className="login">
+             <h3 className="header">Sign In</h3>
+             <div className="form-group">
+                 <h6>Username</h6>
+                 <input type="text" className="form-control" placeholder="Enter username" onChange = {e => this.setInputValue("username", e.target.value)}/>
+             </div>
+             <div className="form-group">
+                 <h6>Password</h6>
+                 <input type="password" className="form-control" placeholder="Enter password" onChange = {e => this.setInputValue("password", e.target.value)}/>
+             </div>
+             <p className="need-an-account text-right">
+                 Need an account? <a href={process.env.REACT_APP_CLIENT_URL + "/Register"}>Register</a>
+             </p>
+             <p className="forgot-password text-right">
+                 Forgot <a href={process.env.REACT_APP_CLIENT_URL + "/PasswordRecovery"}>Password?</a>
+             </p>
+             {
+               this.state.message ? <div className="alert alert-danger text-center">{this.state.message}</div> : ''
+             }
+         </form>
+        </div>
+      </div>
+    );
+  }
 }
 
-const containerStyle = {backgroundColor: "orange"};
-
-const styles = StyleSheet.create({
-    background: {
-        flex:1,
-        justifyContent: "flex-end",
-    },
-
-    container: {
-        flex:1,
-        justifyContent: 'center',
-        marginHorizontal: 0,
-      },
-      title: {
-    textAlign: 'center',
-    marginVertical: 8,
-  },
-    logo: {
-        width:300,
-        height:250,
-        position: 'absolute',
-        top: 30,
-        left: 55,
-
-    },
-    registerButton: {
-        width: "100%",
-        backgroundColor: "lightskyblue",
-        height: 50,
-        bottom: 75,
-    },
-    signinButton: {
-        width: "100%",
-        backgroundColor: "navy",
-        height: 50,
-        bottom: 80,
-    },
-    forgotPasswordButton: {
-        width: "50%",
-        backgroundColor: "transparent",
-        height: 50,
-        bottom: 60,
-        left: 210,
-
-
-    },
-});
-
-export default WelcomeScreen;
+export default Login;
