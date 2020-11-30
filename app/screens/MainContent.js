@@ -61,7 +61,7 @@ async addEvent(Title){
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': process.env.REACT_APP_CLIENT_URL,
+        'Access-Control-Allow-Origin': 'http://localhost:19002',
       },
       body: JSON.stringify({
         Title: Title
@@ -80,7 +80,7 @@ async addEvent(Title){
                 <Card.Header>
                   <Card.Title onClick={ () => this.setShow() }><p className="cardHead">{event.Title}<br/><br/>Made by:<div>{" "}</div>{event.Author.Username}</p></Card.Title>
                   <div className="eventDate"></div>
-                  
+
                 </Card.Header>
                 <Card.Body>
                   <Card.Text>{event.Description}</Card.Text>

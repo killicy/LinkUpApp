@@ -1,15 +1,12 @@
 import React from 'react';
 import {Text, Alert, Button, Image, ImageBackground, SafeAreaView, StyleSheet, TouchableHighlight, View, TextInput } from 'react-native';
 
-    
+
 
 function WelcomeScreen(props) {
 
 
     return (
-
-
-
 
 <View style={styles.container}>
 

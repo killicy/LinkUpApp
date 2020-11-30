@@ -24,8 +24,8 @@ class App extends React.Component {
       password: '',
       msg: '',
       buttonDisabled: false,
-      isSignedIn: true,
-      User: 'ww'
+      isSignedIn: false,
+      User: ''
     }
   }
   async componentDidMount() {
@@ -37,21 +37,21 @@ class App extends React.Component {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': 'http://localhost:19006',
-        }}).then(response => response.json()).then(data => this.setState({ }));
+        }}).then(response => response.json()).then(data => this.setState({isSignedIn: data.success, User: data.msg}));
     }
     catch(e) {
       console.log(e);
     }
   }
 
+
   render(){
     return(
       <NavigationContainer>
-        <Login data={this.state}/>
         {this.state.isSignedIn ? (
-          <Stack.Screen name="Login" component={Login} />
+          <MainPage data={this.state}/>
         ) : (
-          <Stack.Screen name="MainPage" component={MainPage} />
+          <Login data={this.state}/>
         )}
       </NavigationContainer>);
   }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Component } from 'react';
 import {Text, Alert, Button, Image, ImageBackground, SafeAreaView, StyleSheet, TouchableHighlight, View, TextInput } from 'react-native';
+import MainPage from './MainPage';
 
 class Login extends React.Component {
   constructor(){
@@ -11,26 +12,12 @@ class Login extends React.Component {
       msg: '',
       buttonDisabled: false,
       isLoggedin: false,
+      username: '',
+      User: ''
+
     }
   }
   async componentDidMount() {
-    try {
-      await fetch('https://localhost:5000/api/user/isLoggedIn', {
-        method: 'GET',
-        credentials: 'include',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': 'http://localhost:19006',
-        }}).then(response => response.json()).then(data => this.setState({isLoggedin: data.success}));
-         if (this.state.isLoggedin) {
-         }
-         else {
-         }
-    }
-    catch(e) {
-      console.log(e);
-    }
   }
   setInputValue(property, val) {
     console.log(val);
@@ -42,13 +29,9 @@ class Login extends React.Component {
     })
   }
 
-
-  doSignUp(){
-    this.props.history.push('/Register');
-  }
   async doLogin(){
     try{
-      await fetch('https://linkup.rocksthe.net:5000/api/user/login', {
+      await fetch('https://localhost:5000/api/user/login', {
           method: 'POST',
           credentials: 'include',
           headers: {
@@ -61,20 +44,54 @@ class Login extends React.Component {
             Password: this.state.password
           })}).then(response => response.json()).then((data) => {
             if(data.success){
-              console.log(this.state.username);
+              this.state.User = data.Username;
+              console.log("help");
+              console.log(data.Username);
+
+              this.state.isLoggedin = true;
             }
             this.setState({message: data.msg});
           });
 
     }
     catch(e){
-      console.log("kill me please");
+      console.log(e);
     }
   }
 
+
   render() {
+    const styles = StyleSheet.create({
+      background: {
+          justifyContent: "flex-start",
+      },
+      logo: {
+        width:300,
+        height:250,
+        position: 'absolute',
+        top: 30,
+        left: 55,
+
+    },
+    });
+
+    if(this.state.isLoggedin){
+      return(
+        <MainPage data={this.state}/>
+      )
+    }
+
     return(
-      <div className="loginStyling">
+      <div className="loginStyling" style={styles.container}>
+      <View style={styles.container}>
+      <ImageBackground
+      style={styles.background}
+      source={require('../assets/background.jpg')}
+      >
+         <Image style={styles.logo} source={require('../assets/logo.png')} />
+      </ImageBackground>
+      </View>
+
         <div className="loginForm">
           <form className="login">
              <h3 className="header">Sign In</h3>
@@ -96,5 +113,6 @@ class Login extends React.Component {
     );
   }
 }
+
 
 export default Login;

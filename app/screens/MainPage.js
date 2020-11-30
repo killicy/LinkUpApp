@@ -5,6 +5,8 @@ import { Card } from "react-bootstrap";
 import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
 import PropTypes from 'prop-types';
+import NavBar from './NavBar';
+
 
 class LinkUp extends React.Component {
   constructor(props){
@@ -49,7 +51,7 @@ class LinkUp extends React.Component {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': 'http://localhost:19006',
+          'Access-Control-Allow-Origin': 'http://localhost:19002',
         },
         body: JSON.stringify({
           Title: event.Title
@@ -93,7 +95,7 @@ class LinkUp extends React.Component {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': 'http://localhost:19006',
+          'Access-Control-Allow-Origin': 'http://localhost:19002',
         }}).then(response => response.json()).then(data => this.setState({success: data.success, username: data.username}));
          if (this.state.success) {
            this.state.success = false;
@@ -116,7 +118,8 @@ class LinkUp extends React.Component {
           'Access-Control-Allow-Origin': process.env.REACT_APP_CLIENT_URL,
         }}).then(response => response.json()).then(data => this.setState({isLoggedin: data.success,error: data.msg}));
          if (this.state.isLoggedin) {
-           console.log(this.state.error);
+           console.log('help');
+           console.log(this.state.url);
          }
          else {
            console.log(this.state.error);
@@ -144,7 +147,6 @@ class LinkUp extends React.Component {
           this.setState({events: data.UserEvents, friends: data.Friends, friendEvents: data.FriendEvents, success: data.success, addFriend: data.addFriend, friend: data.friend, Profile_pic: data.Profile_pic, user: data.user});
         });
         if(this.state.success === true){
-
           this.state.events.map((event, index) => {
               this.enrolled(event, index, "showy");
               this.participate(event, index, "participants");
@@ -159,6 +161,10 @@ class LinkUp extends React.Component {
     }
     catch(e) {
     }
+    this.setState({
+      success: false,
+      friend: this.state.friend
+    })
   }
 
   setShow(){
@@ -211,6 +217,7 @@ class LinkUp extends React.Component {
 
     return (
       <div className="MainPage">
+        <NavBar data={this.state}/>
         <div className="middleContainer">
             <MainContent data = {this.state}/>
         </div>
